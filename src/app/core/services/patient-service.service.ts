@@ -11,14 +11,14 @@ import { IPaginatedResponse } from '../../shared/interfaces/Common/ipaginated-re
 export class PatientsService {
   private http = inject(HttpClient);
 
-  private apiUrl = 'https://smartmedicalsystem.runasp.net/api/Patients';
+  private apiUrl = 'https://smart-medical-system.runasp.net/api/Patients';
 
   getAllPatient(
     pageNumber: number = 1,
-    pageSize: number = 10
+    pageSize: number = 10,
   ): Observable<IPaginatedResponse<Patient>> {
     return this.http.get<IPaginatedResponse<Patient>>(
-      `${this.apiUrl}?pageNumber=${pageNumber}&pageSize=${pageSize}`
+      `${this.apiUrl}?pageNumber=${pageNumber}&pageSize=${pageSize}`,
     );
   }
 
@@ -30,7 +30,6 @@ export class PatientsService {
     return this.http.get<Patient>(`${this.apiUrl}/${ssn}`);
   }
 
-
   getPatientById(id: number): Observable<Patient> {
     return this.http.get<Patient>(`${this.apiUrl}/by-id/${id}`);
   }
@@ -38,7 +37,6 @@ export class PatientsService {
   updatePatient(ssn: string, dto: UpdatePatientDto): Observable<Patient> {
     return this.http.put<Patient>(`${this.apiUrl}/${ssn}`, dto);
   }
-
 
   updatePatientById(id: number, dto: UpdatePatientDto): Observable<Patient> {
     return this.http.put<Patient>(`${this.apiUrl}/by-id/${id}`, dto);

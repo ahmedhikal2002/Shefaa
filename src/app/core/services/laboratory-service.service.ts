@@ -14,10 +14,10 @@ import { LaboratoryDetails } from '../../shared/interfaces/Laboratory/Laboratory
   providedIn: 'root',
 })
 export class LaboratoryService {
-  private apiUrl = 'https://smartmedicalsystem.runasp.net/api/Laboratories';
-  private departmentsUrl = 'https://smartmedicalsystem.runasp.net/api/Departments';
-  private techniciansUrl = 'https://smartmedicalsystem.runasp.net/api/LabTechnicians';
-  private labTestUrl = 'https://smartmedicalsystem.runasp.net/api/LabTests';
+  private apiUrl = 'https://smart-medical-system.runasp.net/api/Laboratories';
+  private departmentsUrl = 'https://smart-medical-system.runasp.net/api/Departments';
+  private techniciansUrl = 'https://smart-medical-system.runasp.net/api/LabTechnicians';
+  private labTestUrl = 'https://smart-medical-system.runasp.net/api/LabTests';
 
   // private apiUrl = 'https://localhost:7099/api/Laboratories';
   // private departmentsUrl = 'https://localhost:7099/api/Departments';

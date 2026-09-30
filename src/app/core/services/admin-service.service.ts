@@ -12,115 +12,57 @@ import { IAdminDashboard } from '../../shared/interfaces/Admin/IAdminDashboard';
   providedIn: 'root',
 })
 export class AdminService {
+  private readonly baseUrl = 'https://smart-medical-system.runasp.net/api/';
 
-  private readonly baseUrl =
-    'https://smartmedicalsystem.runasp.net/api';
-
-  constructor(
-    private http: HttpClient
-  ) { }
+  constructor(private http: HttpClient) {}
 
   addLabTechnician(data: FormData): Observable<ILabTechnician> {
-
-    return this.http.post<ILabTechnician>(
-      `${this.baseUrl}/LabTechnicians/create`,
-      data
-    );
+    return this.http.post<ILabTechnician>(`${this.baseUrl}/LabTechnicians/create`, data);
   }
 
   deletLabTechnician(nationalId: string): Observable<void> {
-    return this.http.delete<void>(
-      `${this.baseUrl}/LabTechnicians/${nationalId}`
-    );
+    return this.http.delete<void>(`${this.baseUrl}/LabTechnicians/${nationalId}`);
   }
 
-  getAllLabTechnicians(
-    request: IGetLabTechnicians
-  ): Observable<IPagedResponse<ILabTechnician>> {
-
+  getAllLabTechnicians(request: IGetLabTechnicians): Observable<IPagedResponse<ILabTechnician>> {
     let params = new HttpParams()
-      .set(
-        'PageNumber',
-        request.pageNumber.toString()
-      )
-      .set(
-        'PageSize',
-        request.pageSize.toString()
-      );
+      .set('PageNumber', request.pageNumber.toString())
+      .set('PageSize', request.pageSize.toString());
 
     if (request.search?.trim()) {
-
-      params = params.set(
-        'Search',
-        request.search.trim()
-      );
+      params = params.set('Search', request.search.trim());
     }
 
     if (request.laboratory?.trim()) {
-
-      params = params.set(
-        'Laboratory',
-        request.laboratory.trim()
-      );
+      params = params.set('Laboratory', request.laboratory.trim());
     }
 
     if (request.employmentStatus !== undefined) {
-
-      params = params.set(
-        'EmploymentStatus',
-        request.employmentStatus.toString()
-      );
+      params = params.set('EmploymentStatus', request.employmentStatus.toString());
     }
 
     if (request.workShift !== undefined) {
-
-      params = params.set(
-        'WorkShift',
-        request.workShift.toString()
-      );
+      params = params.set('WorkShift', request.workShift.toString());
     }
 
     if (request.joiningDate) {
-
-      params = params.set(
-        'JoiningDate',
-        request.joiningDate
-      );
+      params = params.set('JoiningDate', request.joiningDate);
     }
 
-    return this.http.get<
-      IPagedResponse<ILabTechnician>
-    >(
-      `${this.baseUrl}/LabTechnicians`,
-      { params }
-    );
+    return this.http.get<IPagedResponse<ILabTechnician>>(`${this.baseUrl}/LabTechnicians`, {
+      params,
+    });
   }
 
   getDashboardStats(): Observable<IAdminDashboard> {
-
-    return this.http.get<IAdminDashboard>(
-      `${this.baseUrl}/AdminDashboard`
-    );
-
+    return this.http.get<IAdminDashboard>(`${this.baseUrl}/AdminDashboard`);
   }
 
-  getLabTechnicianById(
-    nationalId: string
-  ): Observable<ILabTechnician> {
-
-    return this.http.get<ILabTechnician>(
-      `${this.baseUrl}/LabTechnicians/${nationalId}`
-    );
+  getLabTechnicianById(nationalId: string): Observable<ILabTechnician> {
+    return this.http.get<ILabTechnician>(`${this.baseUrl}/LabTechnicians/${nationalId}`);
   }
 
-  updateLabTechnician(
-    nationalId: string,
-    formData: FormData
-  ): Observable<ILabTechnician> {
-
-    return this.http.put<ILabTechnician>(
-      `${this.baseUrl}/LabTechnicians/${nationalId}`,
-      formData
-    );
+  updateLabTechnician(nationalId: string, formData: FormData): Observable<ILabTechnician> {
+    return this.http.put<ILabTechnician>(`${this.baseUrl}/LabTechnicians/${nationalId}`, formData);
   }
 }

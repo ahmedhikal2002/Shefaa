@@ -90,47 +90,39 @@ export type {
   providedIn: 'root',
 })
 export class DoctorService {
+  private readonly apiUrlP = 'https://smart-medical-system.runasp.net/api/Patients';
 
-  private readonly apiUrlP =
-    'https://smartmedicalsystem.runasp.net/api/Patients';
+  private readonly requestLabsApiUrl = 'https://smart-medical-system.runasp.net/api/RequestLabs';
 
-  private readonly requestLabsApiUrl =
-    'https://smartmedicalsystem.runasp.net/api/RequestLabs';
+  private readonly labTestsApiUrl = 'https://smart-medical-system.runasp.net/api/LabTests';
 
-  private readonly labTestsApiUrl =
-    'https://smartmedicalsystem.runasp.net/api/LabTests';
+  private readonly doctorsApiUrl = 'https://smart-medical-system.runasp.net/api/Doctors';
 
-  private readonly doctorsApiUrl =
-    'https://smartmedicalsystem.runasp.net/api/Doctors';
-
-  private readonly sessionsApiUrl =
-    'https://smartmedicalsystem.runasp.net/api/Sessions';
+  private readonly sessionsApiUrl = 'https://smart-medical-system.runasp.net/api/Sessions';
 
   private readonly patientResultsApiUrl =
-    'https://smartmedicalsystem.runasp.net/api/PatientResults';
+    'https://smart-medical-system.runasp.net/api/PatientResults';
 
   private readonly patientResultElementsApiUrl =
-    'https://smartmedicalsystem.runasp.net/api/PatientResultElements';
+    'https://smart-medical-system.runasp.net/api/PatientResultElements';
 
   // ⚠️ كان متظبط غلط على https://openrouter.ai/api/v1 (ده الـ base URL بتاع
   // الموديل الخارجي اللي الباك اند بينده بيه من جواه، مش راوت الكونترولر بتاعنا).
   // الصح إن الفرونت ينده على السيرفر بتاعنا نفسه على الكونترولر:
   // [Route("api/[controller]")] public class PatientAIReportsController
   private readonly patientAIReportsApiUrl =
-    'https://smartmedicalsystem.runasp.net/api/PatientAIReports';
+    'https://smart-medical-system.runasp.net/api/PatientAIReports';
 
-  private readonly aiChatApiUrl =
-    'https://smartmedicalsystem.runasp.net/api/rag/chat';
+  private readonly aiChatApiUrl = 'https://smart-medical-system.runasp.net/api/rag/chat';
 
-  private readonly profileApiUrl =
-    'https://smartmedicalsystem.runasp.net/api/Profile';
+  private readonly profileApiUrl = 'https://smart-medical-system.runasp.net/api/Profile';
 
   private readonly GENDER_TO_ENUM: Record<string, number> = {
     Male: 0,
     Female: 1,
   };
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {}
 
   getAllPatients(
     pageNumber: number = 1,
@@ -138,12 +130,9 @@ export class DoctorService {
     search?: string,
     gender?: string,
     minAge?: number,
-    maxAge?: number
+    maxAge?: number,
   ): Observable<PaginatedResponse<Patient>> {
-
-    let params = new HttpParams()
-      .set('pageNumber', pageNumber)
-      .set('pageSize', pageSize);
+    let params = new HttpParams().set('pageNumber', pageNumber).set('pageSize', pageSize);
 
     if (search && search.trim()) {
       params = params.set('search', search.trim());
@@ -161,28 +150,28 @@ export class DoctorService {
       params = params.set('maxAge', maxAge);
     }
 
-    return this.http.get<PaginatedResponse<Patient>>(this.apiUrlP, {
-      params,
-    }).pipe(
-      catchError(() => {
-        return this.getAllPatientsPaginated(pageNumber, pageSize);
+    return this.http
+      .get<PaginatedResponse<Patient>>(this.apiUrlP, {
+        params,
       })
-    );
+      .pipe(
+        catchError(() => {
+          return this.getAllPatientsPaginated(pageNumber, pageSize);
+        }),
+      );
   }
 
   // مطابقة لـ PatientsController.GetAllPaginated
   getAllPatientsPaginated(
     pageNumber: number = 1,
-    pageSize: number = 10
+    pageSize: number = 10,
   ): Observable<PaginatedResponse<Patient>> {
-    const params = new HttpParams()
-      .set('pageNumber', pageNumber)
-      .set('pageSize', pageSize);
+    const params = new HttpParams().set('pageNumber', pageNumber).set('pageSize', pageSize);
 
     return this.http.get<PaginatedResponse<Patient>>(this.apiUrlP, { params }).pipe(
       catchError(() => {
         return this.http.get<PaginatedResponse<Patient>>(`${this.apiUrlP}/paginated`, { params });
-      })
+      }),
     );
   }
 
@@ -199,15 +188,13 @@ export class DoctorService {
   getLabRequestsBySession(
     sessionId: number,
     pageNumber: number = 1,
-    pageSize: number = 10
+    pageSize: number = 10,
   ): Observable<PaginatedResponse<RequestLabsReadDto>> {
-    const params = new HttpParams()
-      .set('pageNumber', pageNumber)
-      .set('pageSize', pageSize);
+    const params = new HttpParams().set('pageNumber', pageNumber).set('pageSize', pageSize);
 
     return this.http.get<PaginatedResponse<RequestLabsReadDto>>(
       `${this.requestLabsApiUrl}/by-session/${sessionId}`,
-      { params }
+      { params },
     );
   }
 
@@ -221,12 +208,9 @@ export class DoctorService {
 
   updateLabRequestStatus(
     id: number,
-    dto: RequestLabsUpdateStatusDto
+    dto: RequestLabsUpdateStatusDto,
   ): Observable<RequestLabsReadDto> {
-    return this.http.put<RequestLabsReadDto>(
-      `${this.requestLabsApiUrl}/by-id/${id}/status`,
-      dto
-    );
+    return this.http.put<RequestLabsReadDto>(`${this.requestLabsApiUrl}/by-id/${id}/status`, dto);
   }
 
   // ============ Lab Tests ============
@@ -234,11 +218,9 @@ export class DoctorService {
   // مطابقة لـ LabTestsController.GetAll
   getLabTests(
     pageNumber: number = 1,
-    pageSize: number = 100
+    pageSize: number = 100,
   ): Observable<PaginatedResponse<LabTestReadDto>> {
-    const params = new HttpParams()
-      .set('pageNumber', pageNumber)
-      .set('pageSize', pageSize);
+    const params = new HttpParams().set('pageNumber', pageNumber).set('pageSize', pageSize);
 
     return this.http.get<PaginatedResponse<LabTestReadDto>>(this.labTestsApiUrl, {
       params,
@@ -255,11 +237,9 @@ export class DoctorService {
   // مطابقة لـ DoctorsController.GetAll
   getAllDoctors(
     pageNumber: number = 1,
-    pageSize: number = 10
+    pageSize: number = 10,
   ): Observable<PaginatedResponse<DoctorReadDto>> {
-    const params = new HttpParams()
-      .set('pageNumber', pageNumber)
-      .set('pageSize', pageSize);
+    const params = new HttpParams().set('pageNumber', pageNumber).set('pageSize', pageSize);
 
     return this.http.get<PaginatedResponse<DoctorReadDto>>(this.doctorsApiUrl, {
       params,
@@ -270,15 +250,13 @@ export class DoctorService {
   getDoctorsByDepartment(
     departmentId: number,
     pageNumber: number = 1,
-    pageSize: number = 10
+    pageSize: number = 10,
   ): Observable<PaginatedResponse<DoctorReadDto>> {
-    const params = new HttpParams()
-      .set('pageNumber', pageNumber)
-      .set('pageSize', pageSize);
+    const params = new HttpParams().set('pageNumber', pageNumber).set('pageSize', pageSize);
 
     return this.http.get<PaginatedResponse<DoctorReadDto>>(
       `${this.doctorsApiUrl}/by-department/${departmentId}`,
-      { params }
+      { params },
     );
   }
 
@@ -313,15 +291,13 @@ export class DoctorService {
   getSessionsByPatient(
     patientId: number,
     pageNumber: number = 1,
-    pageSize: number = 10
+    pageSize: number = 10,
   ): Observable<PaginatedResponse<SessionReadDto>> {
-    const params = new HttpParams()
-      .set('pageNumber', pageNumber)
-      .set('pageSize', pageSize);
+    const params = new HttpParams().set('pageNumber', pageNumber).set('pageSize', pageSize);
 
     return this.http.get<PaginatedResponse<SessionReadDto>>(
       `${this.sessionsApiUrl}/by-patient/${patientId}`,
-      { params }
+      { params },
     );
   }
 
@@ -351,15 +327,13 @@ export class DoctorService {
   getPatientResultsByPatient(
     patientId: number,
     pageNumber: number = 1,
-    pageSize: number = 10
+    pageSize: number = 10,
   ): Observable<PaginatedResponse<PatientResultReadDto>> {
-    const params = new HttpParams()
-      .set('pageNumber', pageNumber)
-      .set('pageSize', pageSize);
+    const params = new HttpParams().set('pageNumber', pageNumber).set('pageSize', pageSize);
 
     return this.http.get<PaginatedResponse<PatientResultReadDto>>(
       `${this.patientResultsApiUrl}/by-patient/${patientId}`,
-      { params }
+      { params },
     );
   }
 
@@ -367,7 +341,7 @@ export class DoctorService {
   getPatientResultsByDoctor(
     doctorId: number,
     pageNumber: number = 1,
-    pageSize: number = 20
+    pageSize: number = 20,
   ): Observable<PaginatedResponse<PatientResultReadDto>> {
     const emptyPaginated: PaginatedResponse<PatientResultReadDto> = {
       items: [],
@@ -381,69 +355,69 @@ export class DoctorService {
       lastItemIndex: 0,
     };
 
-    const params = new HttpParams()
-      .set('pageNumber', pageNumber)
-      .set('pageSize', pageSize);
+    const params = new HttpParams().set('pageNumber', pageNumber).set('pageSize', pageSize);
 
-    return this.http.get<PaginatedResponse<PatientResultReadDto>>(
-      `${this.patientResultsApiUrl}/by-doctor/${doctorId}`,
-      { params }
-    ).pipe(
-      catchError(() => {
-        // Fallback إذا كان سيرفر ASP.NET أونلاين لم يُنشر عليه الراوت الجديد بعد:
-        // بنجيب المرضى ونشوف جلساتهم المطابقة للـ doctorId
-        return this.getAllPatients(1, 20).pipe(
-          switchMap((patientsRes) => {
-            const patients = patientsRes.items || [];
-            if (patients.length === 0) {
-              return of(emptyPaginated);
-            }
-            const requests = patients.map((p) =>
-              forkJoin({
-                sessions: this.getSessionsByPatient(p.id, 1, 50).pipe(
-                  catchError(() => of({ items: [] }))
-                ),
-                results: this.getPatientResultsByPatient(p.id, 1, 50).pipe(
-                  catchError(() => of({ items: [] }))
-                ),
-              })
-            );
-            return forkJoin(requests).pipe(
-              map((patientDataList): PaginatedResponse<PatientResultReadDto> => {
-                const doctorSessionIds = new Set<number>();
-                patientDataList.forEach((pd) => {
-                  (pd.sessions.items || []).forEach((s) => {
-                    if (s.doctorId === doctorId) {
-                      doctorSessionIds.add(s.id);
-                    }
+    return this.http
+      .get<PaginatedResponse<PatientResultReadDto>>(
+        `${this.patientResultsApiUrl}/by-doctor/${doctorId}`,
+        { params },
+      )
+      .pipe(
+        catchError(() => {
+          // Fallback إذا كان سيرفر ASP.NET أونلاين لم يُنشر عليه الراوت الجديد بعد:
+          // بنجيب المرضى ونشوف جلساتهم المطابقة للـ doctorId
+          return this.getAllPatients(1, 20).pipe(
+            switchMap((patientsRes) => {
+              const patients = patientsRes.items || [];
+              if (patients.length === 0) {
+                return of(emptyPaginated);
+              }
+              const requests = patients.map((p) =>
+                forkJoin({
+                  sessions: this.getSessionsByPatient(p.id, 1, 50).pipe(
+                    catchError(() => of({ items: [] })),
+                  ),
+                  results: this.getPatientResultsByPatient(p.id, 1, 50).pipe(
+                    catchError(() => of({ items: [] })),
+                  ),
+                }),
+              );
+              return forkJoin(requests).pipe(
+                map((patientDataList): PaginatedResponse<PatientResultReadDto> => {
+                  const doctorSessionIds = new Set<number>();
+                  patientDataList.forEach((pd) => {
+                    (pd.sessions.items || []).forEach((s) => {
+                      if (s.doctorId === doctorId) {
+                        doctorSessionIds.add(s.id);
+                      }
+                    });
                   });
-                });
-                const matchedResults: PatientResultReadDto[] = [];
-                patientDataList.forEach((pd) => {
-                  (pd.results.items || []).forEach((r) => {
-                    if (doctorSessionIds.has(r.sessionId)) {
-                      matchedResults.push(r);
-                    }
+                  const matchedResults: PatientResultReadDto[] = [];
+                  patientDataList.forEach((pd) => {
+                    (pd.results.items || []).forEach((r) => {
+                      if (doctorSessionIds.has(r.sessionId)) {
+                        matchedResults.push(r);
+                      }
+                    });
                   });
-                });
-                return {
-                  items: matchedResults,
-                  totalCount: matchedResults.length,
-                  pageNumber: 1,
-                  pageSize,
-                  totalPages: matchedResults.length > 0 ? 1 : 0,
-                  hasNextPage: false,
-                  hasPreviousPage: false,
-                  firstItemIndex: matchedResults.length > 0 ? 1 : 0,
-                  lastItemIndex: matchedResults.length,
-                };
-              })
-            );
-          }),
-          catchError(() => of(emptyPaginated))
-        );
-      })
-    );
+                  return {
+                    items: matchedResults,
+                    totalCount: matchedResults.length,
+                    pageNumber: 1,
+                    pageSize,
+                    totalPages: matchedResults.length > 0 ? 1 : 0,
+                    hasNextPage: false,
+                    hasPreviousPage: false,
+                    firstItemIndex: matchedResults.length > 0 ? 1 : 0,
+                    lastItemIndex: matchedResults.length,
+                  };
+                }),
+              );
+            }),
+            catchError(() => of(emptyPaginated)),
+          );
+        }),
+      );
   }
 
   // مطابقة لـ PatientResultsController.GetById
@@ -464,56 +438,56 @@ export class DoctorService {
   // مطابقة لـ PatientResultsController.UpdateStatus
   updatePatientResultStatus(
     id: number,
-    dto: PatientResultStatusUpdateDto
+    dto: PatientResultStatusUpdateDto,
   ): Observable<PatientResultReadDto> {
     const statusUrl = `${this.patientResultsApiUrl}/${id}/status`;
     const directUrl = `${this.patientResultsApiUrl}/${id}`;
 
-    return this.http.put<PatientResultReadDto>(directUrl, { status: dto.status, aiReportStatus: dto.status }).pipe(
-      catchError(() => {
-        return this.http.patch<PatientResultReadDto>(statusUrl, dto).pipe(
-          catchError(() => {
-            return this.http.put<PatientResultReadDto>(statusUrl, dto).pipe(
-              catchError(() => {
-                return this.getPatientResultById(id).pipe(
-                  map((res) => ({
-                    ...res,
-                    aiReportStatus: dto.status,
-                  })),
-                  catchError(() =>
-                    of({
-                      id,
-                      patientId: 0,
-                      sessionId: 0,
-                      labTestId: 0,
-                      summary: '',
-                      aIClassifiedReport: '',
-                      aISuggestion: '',
+    return this.http
+      .put<PatientResultReadDto>(directUrl, { status: dto.status, aiReportStatus: dto.status })
+      .pipe(
+        catchError(() => {
+          return this.http.patch<PatientResultReadDto>(statusUrl, dto).pipe(
+            catchError(() => {
+              return this.http.put<PatientResultReadDto>(statusUrl, dto).pipe(
+                catchError(() => {
+                  return this.getPatientResultById(id).pipe(
+                    map((res) => ({
+                      ...res,
                       aiReportStatus: dto.status,
-                    } as PatientResultReadDto)
-                  )
-                );
-              })
-            );
-          })
-        );
-      })
-    );
+                    })),
+                    catchError(() =>
+                      of({
+                        id,
+                        patientId: 0,
+                        sessionId: 0,
+                        labTestId: 0,
+                        summary: '',
+                        aIClassifiedReport: '',
+                        aISuggestion: '',
+                        aiReportStatus: dto.status,
+                      } as PatientResultReadDto),
+                    ),
+                  );
+                }),
+              );
+            }),
+          );
+        }),
+      );
   }
 
   // مطابقة لـ PatientResultElementsController.GetByPatientResult
   getPatientResultElements(
     patientResultId: number,
     pageNumber: number = 1,
-    pageSize: number = 100
+    pageSize: number = 100,
   ): Observable<PaginatedResponse<PatientResultElementDto>> {
-    const params = new HttpParams()
-      .set('pageNumber', pageNumber)
-      .set('pageSize', pageSize);
+    const params = new HttpParams().set('pageNumber', pageNumber).set('pageSize', pageSize);
 
     return this.http.get<PaginatedResponse<PatientResultElementDto>>(
       `${this.patientResultElementsApiUrl}/by-patient-result/${patientResultId}`,
-      { params }
+      { params },
     );
   }
 
@@ -524,7 +498,7 @@ export class DoctorService {
   generateAIAnalysisForResult(patientResultId: number): Observable<PatientResultAIAnalysisDto> {
     return this.http.post<PatientResultAIAnalysisDto>(
       `${this.patientAIReportsApiUrl}/results/${patientResultId}/generate`,
-      {}
+      {},
     );
   }
 
@@ -532,14 +506,14 @@ export class DoctorService {
   // التقرير الموحّد لكل نتائج المريض + ملخص شامل من الـ AI
   getFullPatientAIReport(patientId: number): Observable<PatientFullAIReportDto> {
     return this.http.get<PatientFullAIReportDto>(
-      `${this.patientAIReportsApiUrl}/patients/${patientId}/full-report`
+      `${this.patientAIReportsApiUrl}/patients/${patientId}/full-report`,
     );
   }
 
   // مطابقة لـ PatientAIReportsController.GetStoredFullPatientReport
   getStoredFullPatientReport(patientId: number): Observable<StoredFullReportDto> {
     return this.http.get<StoredFullReportDto>(
-      `${this.patientAIReportsApiUrl}/patients/${patientId}/full-report/stored`
+      `${this.patientAIReportsApiUrl}/patients/${patientId}/full-report/stored`,
     );
   }
 
@@ -547,7 +521,7 @@ export class DoctorService {
   updateStoredFullPatientReport(patientId: number, dto: StoredFullReportDto): Observable<void> {
     return this.http.put<void>(
       `${this.patientAIReportsApiUrl}/patients/${patientId}/full-report`,
-      dto
+      dto,
     );
   }
 
@@ -596,19 +570,11 @@ export class DoctorService {
   // ============ AI Chat ============
 
   // إرسال سؤال للمساعد الطبي AI الخاص بالمريض
-  askPatientAI(
-    dto: AIChatRequestDto
-  ): Observable<AIChatResponseDto> {
-
-    return this.http.post<AIChatResponseDto>(
-      this.aiChatApiUrl,
-      dto,
-      { context: skipLoading() }
-    );
-
+  askPatientAI(dto: AIChatRequestDto): Observable<AIChatResponseDto> {
+    return this.http.post<AIChatResponseDto>(this.aiChatApiUrl, dto, { context: skipLoading() });
   }
 
-  private apiUrl = 'https://smartmedicalsystem.runasp.net/api/Doctors';
+  private apiUrl = 'https://smart-medical-system.runasp.net/api/Doctors';
 
   // ================= GET BY SSN (nationalId) =================
   getDoctorBySSN(ssn: string): Observable<Doctor> {
@@ -630,8 +596,7 @@ export class DoctorService {
   }
   getAllDoctorsY(pageNumber: number = 1, pageSize: number = 10): Observable<DoctorResponse> {
     return this.http.get<DoctorResponse>(
-      `${this.apiUrl}?pageNumber=${pageNumber}&pageSize=${pageSize}`
+      `${this.apiUrl}?pageNumber=${pageNumber}&pageSize=${pageSize}`,
     );
   }
-
 }

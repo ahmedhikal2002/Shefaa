@@ -13,8 +13,8 @@ import { DoctorAtDepartment } from '../../shared/interfaces/Department/DoctorAtD
   providedIn: 'root',
 })
 export class DepartmentService {
-  private apiUrl = 'https://smartmedicalsystem.runasp.net/api/Departments';
-  private doctorsUrl = 'https://smartmedicalsystem.runasp.net/api/Doctors';
+  private apiUrl = 'https://smart-medical-system.runasp.net/api/Departments';
+  private doctorsUrl = 'https://smart-medical-system.runasp.net/api/Doctors';
 
   // private apiUrl = 'https://localhost:7099/api/Departments';
   // private doctorsUrl = 'https://localhost:7099/api/Doctors';
@@ -22,7 +22,7 @@ export class DepartmentService {
   constructor(
     private http: HttpClient,
     private auth: AuthenticationService,
-  ) { }
+  ) {}
 
   // ============================================================
   // Department APIs

@@ -6,26 +6,21 @@ import { Observable } from 'rxjs';
   providedIn: 'root',
 })
 export class RequestLabsService {
+  private baseUrl = 'https://smart-medical-system.runasp.net/api/RequestLabs';
 
-  private baseUrl = 'https://smartmedicalsystem.runasp.net/api/RequestLabs';
-
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {}
 
   RequestLabsTable(pageNumber: number = 1, pageSize: number = 10): Observable<any> {
     return this.http.get(
-      `${this.baseUrl}/laboratory?pageNumber=${pageNumber}&pageSize=${pageSize}`
+      `${this.baseUrl}/laboratory?pageNumber=${pageNumber}&pageSize=${pageSize}`,
     );
   }
 
   RequestsDetails(id: number): Observable<any> {
-    return this.http.get(
-      `${this.baseUrl}/${id}`
-    );
+    return this.http.get(`${this.baseUrl}/${id}`);
   }
 
   SessionRequests(sessionId: number): Observable<any> {
-    return this.http.get(
-      `${this.baseUrl}/by-session/${sessionId}`
-    );
+    return this.http.get(`${this.baseUrl}/by-session/${sessionId}`);
   }
 }

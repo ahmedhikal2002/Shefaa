@@ -6,16 +6,12 @@ import { INotification } from '../../shared/interfaces/Notification/inotificatio
 import { IPaginatedResponse } from '../../shared/interfaces/Common/ipaginated-response';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class NotificationService {
+  private readonly baseUrl = 'https://smart-medical-system.runasp.net/api/Notifications';
 
-  private readonly baseUrl =
-    'https://smartmedicalsystem.runasp.net/api/Notifications';
-
-  constructor(
-    private http: HttpClient
-  ) { }
+  constructor(private http: HttpClient) {}
 
   // ===========================
   // Get All Notifications
@@ -23,18 +19,11 @@ export class NotificationService {
 
   getNotifications(
     pageNumber: number = 1,
-    pageSize: number = 10
+    pageSize: number = 10,
   ): Observable<IPaginatedResponse<INotification>> {
+    const params = new HttpParams().set('pageNumber', pageNumber).set('pageSize', pageSize);
 
-    const params = new HttpParams()
-      .set('pageNumber', pageNumber)
-      .set('pageSize', pageSize);
-
-    return this.http.get<IPaginatedResponse<INotification>>(
-      this.baseUrl,
-      { params }
-    );
-
+    return this.http.get<IPaginatedResponse<INotification>>(this.baseUrl, { params });
   }
 
   // ===========================
@@ -43,18 +32,11 @@ export class NotificationService {
 
   getUnreadNotifications(
     pageNumber: number = 1,
-    pageSize: number = 10
+    pageSize: number = 10,
   ): Observable<IPaginatedResponse<INotification>> {
+    const params = new HttpParams().set('pageNumber', pageNumber).set('pageSize', pageSize);
 
-    const params = new HttpParams()
-      .set('pageNumber', pageNumber)
-      .set('pageSize', pageSize);
-
-    return this.http.get<IPaginatedResponse<INotification>>(
-      `${this.baseUrl}/unread`,
-      { params }
-    );
-
+    return this.http.get<IPaginatedResponse<INotification>>(`${this.baseUrl}/unread`, { params });
   }
 
   // ===========================
@@ -62,39 +44,21 @@ export class NotificationService {
   // ===========================
 
   getUnreadCount(): Observable<number> {
-
-    return this.http.get<number>(
-      `${this.baseUrl}/unread-count`
-    );
-
+    return this.http.get<number>(`${this.baseUrl}/unread-count`);
   }
 
   // ===========================
   // Mark As Read
   // ===========================
 
-  markAsRead(
-    notificationId: number
-  ): Observable<void> {
-
-    return this.http.put<void>(
-      `${this.baseUrl}/${notificationId}/read`,
-      {}
-    );
-
+  markAsRead(notificationId: number): Observable<void> {
+    return this.http.put<void>(`${this.baseUrl}/${notificationId}/read`, {});
   }
 
   // ===========================
   // Mark All As Read
   // ===========================
   markAllAsRead(): Observable<void> {
-
-    return this.http.put<void>(
-      `${this.baseUrl}/read-all`,
-      {}
-    );
-
+    return this.http.put<void>(`${this.baseUrl}/read-all`, {});
   }
-
-
 }

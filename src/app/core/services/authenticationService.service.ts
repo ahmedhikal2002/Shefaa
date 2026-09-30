@@ -15,7 +15,7 @@ import { NotificationHubService } from './notification-hub.service';
   providedIn: 'root',
 })
 export class AuthenticationService {
-  private readonly baseUrl = 'https://smartmedicalsystem.runasp.net/api/';
+  private readonly baseUrl = 'https://smart-medical-system.runasp.net/api/';
 
   private readonly REFRESH_KEY = 'refreshToken';
   private readonly accessToken = signal<string | null>(null);
@@ -27,7 +27,7 @@ export class AuthenticationService {
   constructor(
     private http: HttpClient,
     private router: Router,
-  ) { }
+  ) {}
 
   // ================= APIs =================
 
@@ -73,10 +73,7 @@ export class AuthenticationService {
     this.accessToken.set(accessToken);
     localStorage.setItem(this.REFRESH_KEY, refreshToken);
     const decoded = jwtDecode<any>(accessToken);
-    this.userImage.set(
-      `https://smartmedicalsystem.runasp.net/${decoded['photo_url'] ?? ''}`
-    );
-
+    this.userImage.set(`https://smartmedicalsystem.runasp.net/${decoded['photo_url'] ?? ''}`);
   }
 
   getAccessToken(): string | null {
@@ -111,16 +108,15 @@ export class AuthenticationService {
 
   setUserImage(url: string | null | undefined) {
     this.userImage.set(
-      !url || url === 'https://smartmedicalsystem.runasp.net/'
-        ? this.defaultImage
-        : url
+      !url || url === 'https://smartmedicalsystem.runasp.net/' ? this.defaultImage : url,
     );
   }
 
-
   getUserImage(): string {
-    if (this.userImage() === "" || this.userImage() === null) {
-      this.userImage.set('https://w7.pngwing.com/pngs/340/946/png-transparent-avatar-user-computer-icons-software-developer-avatar-child-face-heroes.png');
+    if (this.userImage() === '' || this.userImage() === null) {
+      this.userImage.set(
+        'https://w7.pngwing.com/pngs/340/946/png-transparent-avatar-user-computer-icons-software-developer-avatar-child-face-heroes.png',
+      );
     }
     return this.userImage();
   }
