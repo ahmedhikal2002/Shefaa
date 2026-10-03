@@ -12,7 +12,7 @@ import { IAdminDashboard } from '../../shared/interfaces/Admin/IAdminDashboard';
   providedIn: 'root',
 })
 export class AdminService {
-  private readonly baseUrl = 'https://smart-medical-system.runasp.net/api/';
+  private readonly baseUrl = 'https://smart-medical-system.runasp.net/api';
 
   constructor(private http: HttpClient) {}
 
